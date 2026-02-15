@@ -13,29 +13,34 @@ use Illuminate\Support\Facades\Validator;
 class MessageController extends Controller
 {
     /**
-     * GET /api/messages
-     *
-     * Return the latest 50 non-expired messages.
-     * Supports optional ?category= filter.
-     */
-    public function index(Request $request): JsonResponse
-    {
-        $query = Message::notExpired()
-            ->orderByDesc('created_at');
+ * GET /api/messages
+ *
+ * Return paginated non-expired messages (12 per page).
+ * Supports optional ?category= filter and ?page= for pagination.
+ */
+public function index(Request $request): JsonResponse
+{
+    $query = Message::notExpired()
+        ->orderByDesc('created_at');
 
-        // Optional category filter
-        if ($request->filled('category')) {
-            $category = strip_tags(trim($request->query('category')));
-            $query->where('category', $category);
-        }
-
-        $messages = $query->take(50)->get();
-
-        return response()->json([
-            'status' => 'success',
-            'data'   => $messages,
-        ]);
+    // Optional category filter
+    if ($request->filled('category')) {
+        $category = strip_tags(trim($request->query('category')));
+        $query->where('category', $category);
     }
+
+    $messages = $query->paginate(12);
+
+    return response()->json([
+        'status' => 'success',
+        'data'   => $messages->items(),
+        'meta'   => [
+            'current_page' => $messages->currentPage(),
+            'last_page'    => $messages->lastPage(),
+            'total'        => $messages->total(),
+        ],
+    ]);
+}
 
     /**
      * POST /api/messages
