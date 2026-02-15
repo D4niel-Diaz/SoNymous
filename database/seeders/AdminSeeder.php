@@ -10,10 +10,10 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         Admin::updateOrCreate(
-            ['email' => 'admin@sorsu.edu'],
+            ['email' => 'daniel@gmail.com'],
             [
-                'name'     => 'Admin',
-                'password' => 'password', // auto-hashed via model cast
+                'name'     => 'Daniel',
+                'password' => 'habukodaw', // auto-hashed via model cast
             ]
         );
     }

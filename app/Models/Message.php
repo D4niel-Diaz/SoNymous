@@ -26,6 +26,7 @@ class Message extends Model
      */
     protected $hidden = [
         'ip_hash',
+        'is_deleted',
         'updated_at',
     ];
 

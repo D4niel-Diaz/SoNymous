@@ -89,6 +89,9 @@ class AdminController extends Controller
 
         $messages = $query->paginate(50);
 
+        // Make is_deleted visible for admin view (hidden by default for public API)
+        $messages->getCollection()->each->makeVisible('is_deleted');
+
         return response()->json([
             'status' => 'success',
             'data'   => $messages->items(),
