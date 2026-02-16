@@ -15,6 +15,7 @@ class Message extends Model
     protected $fillable = [
         'content',
         'ip_hash',
+        'campus',
         'category',
         'expires_at',
         'is_deleted',

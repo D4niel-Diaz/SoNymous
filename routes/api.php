@@ -23,10 +23,14 @@ Route::prefix('messages')->group(function () {
     Route::post('/', [MessageController::class, 'store'])
         ->middleware('throttle:10,1');
 
+
+
     Route::post('/{id}/like', [MessageController::class, 'like'])
         ->where('id', '[0-9]+')
         ->middleware('throttle:30,1');
 });
+
+Route::get('/announcements', [App\Http\Controllers\AnnouncementController::class, 'index']);
 
 /*
 |--------------------------------------------------------------------------
@@ -47,5 +51,9 @@ Route::prefix('admin')->group(function () {
         Route::get('/messages', [AdminController::class, 'index']);
         Route::delete('/messages/{id}', [AdminController::class, 'destroy'])
             ->where('id', '[0-9]+');
+
+        Route::post('/announcements', [App\Http\Controllers\AnnouncementController::class, 'store']);
+        Route::put('/announcements/{id}', [App\Http\Controllers\AnnouncementController::class, 'update']);
+        Route::delete('/announcements/{id}', [App\Http\Controllers\AnnouncementController::class, 'destroy']);
     });
 });

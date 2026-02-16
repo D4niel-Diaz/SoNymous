@@ -29,6 +29,12 @@ public function index(Request $request): JsonResponse
         $query->where('category', $category);
     }
 
+    // Optional campus filter
+    if ($request->filled('campus')) {
+        $campus = strip_tags(trim($request->query('campus')));
+        $query->where('campus', $campus);
+    }
+
     $messages = $query->paginate(12);
 
     return response()->json([
@@ -51,8 +57,9 @@ public function index(Request $request): JsonResponse
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'content'  => 'required|string|max:200',
+            'content'  => 'required|string|max:3000',
             'category' => 'nullable|string|max:50|in:advice,confession,fun',
+            'campus'   => 'required|string|in:Main Campus,Bulan,Magallanes,Castilla,Baribag',
         ]);
 
         if ($validator->fails()) {
@@ -76,6 +83,7 @@ public function index(Request $request): JsonResponse
         $message = Message::create([
             'content'    => $sanitizedContent,
             'ip_hash'    => $ipHash,
+            'campus'     => $validator->validated()['campus'],
             'category'   => $validator->validated()['category'] ?? null,
             'expires_at' => now()->addHours(24),
         ]);
